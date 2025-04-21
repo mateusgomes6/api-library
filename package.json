@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/mateusgomes6/sistema-de-gerenciamento-livros/issues"
   },
-  "homepage": "https://github.com/mateusgomes6/sistema-de-gerenciamento-livros#readme"
+  "homepage": "https://github.com/mateusgomes6/sistema-de-gerenciamento-livros#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
