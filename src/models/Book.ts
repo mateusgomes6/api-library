@@ -1,4 +1,4 @@
-const db = require ('../database/db')
+const db = require ('../database/db');
 
 class Book {
     static async getAll() {
@@ -63,4 +63,4 @@ class Book {
 
 }
 
-module.exports = Book;
+export default Book;
