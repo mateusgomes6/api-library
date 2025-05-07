@@ -1,4 +1,4 @@
-const db = require('../models/Book');
+const Book = require('../models/Book');
 
 exports.getAllBooks = async (req, res) => {
     try {
@@ -23,16 +23,9 @@ exports.getBookById = async (req, res) => {
 };
 
 exports.addBook = async (req, res) => {
-    const { titulo, autor, genero, ano_publicacao } = req.body;
-    if (!titulo || !autor) {
-        res.status(400).json({ error: 'Título e/ou autor são obrigatórios '});
-    }
     try {
-        const [result] = await db.execute(
-          'INSERT INTO books VALUES (?, ?, ?, ?)', 
-          [titulo, autor, genero, ano_publicacao]
-        );
-        res.status(201).json({ id: result.insertId, message: 'Livro adicionado com sucesso.' });
+        const bookId = await Book.create(req.body);
+        res.status(201).json({ id: bookId, message: 'Livro adicionado com sucesso.' });
     } catch (err) {
         res.status(500).json({ error: err.message })
     }

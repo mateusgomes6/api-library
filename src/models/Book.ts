@@ -21,6 +21,19 @@ class Book {
         }
     }
 
+    static async create(BookData) {
+        const { titulo, autor, genero, ano_publicacao } = req.body;
+        try {
+            const [result] = await db.execute(
+                'INSERT INTO books VALUES (?, ?, ?, ?)', 
+                [titulo, autor, genero, ano_publicacao]
+            );
+            return result.insertId;
+        } catch (error) {
+            console.error('Error ao criar o livro', error);
+            throw error;
+    }
+
 }
 
 module.exports = Book;
