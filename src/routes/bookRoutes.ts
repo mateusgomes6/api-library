@@ -8,6 +8,9 @@ router.get('/books', bookController.getAllBooks);
 //Listar livro específico
 router.get('books/:id', bookController.getBookById);
 
+//Buscar livros de um gênero específico
+router.get('books/:genero')
+
 //Adicionar livro
 router.post('/books', bookController.addBook);
 

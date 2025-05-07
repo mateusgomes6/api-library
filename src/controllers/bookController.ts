@@ -22,6 +22,16 @@ export const getBookById = async (req, res) => {
     }
 };
 
+export const getBookByGenre = async (req, res) => {
+    const categoria = req.params.genero;
+    try {
+        const book = await Book.getByGenre(categoria);
+        res.json({ book });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export const addBook = async (req, res) => {
     try {
         const bookId = await Book.create(req.body);
