@@ -1,6 +1,7 @@
-const Book = require('../models/Book');
+import { Request, Response } from 'express';
+import Book from '../models/Book';
 
-exports.getAllBooks = async (req, res) => {
+export const getAllBooks = async (req, res) => {
     try {
         const books = await Book.getAll()
         res.json({ books });
@@ -9,7 +10,7 @@ exports.getAllBooks = async (req, res) => {
     }
 };
 
-exports.getBookById = async (req, res) => {
+export const getBookById = async (req, res) => {
     const id = req.params.id;
     try {
         const book = await Book.getById(id);
@@ -22,7 +23,7 @@ exports.getBookById = async (req, res) => {
     }
 };
 
-exports.addBook = async (req, res) => {
+export const addBook = async (req, res) => {
     try {
         const bookId = await Book.create(req.body);
         res.status(201).json({ id: bookId, message: 'Livro adicionado com sucesso.' });
@@ -31,7 +32,7 @@ exports.addBook = async (req, res) => {
     }
 };
 
-exports.updateBook = async (req, res) => {
+export const updateBook = async (req, res) => {
     const { id } = req.params;
     try {
         const affectedRows = await Book.update(id, req.body);
@@ -44,7 +45,7 @@ exports.updateBook = async (req, res) => {
     }
 };
 
-exports.deleteBook = async (req, res) => {
+export const deleteBook = async (req, res) => {
     const id = req.params.id;
     try {
         const affectedRows = await Book.delete(id);
