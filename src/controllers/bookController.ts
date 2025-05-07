@@ -12,11 +12,11 @@ exports.getAllBooks = async (req, res) => {
 exports.getBookById = async (req, res) => {
     const id = req.params.id;
     try {
-        const[rows] = await db.execute('SELECT * FROM books WHERE ID = ?', [id]);
-        if (rows.length === 0) {
+        const book = await Book.getById(id);
+        if (!book) {
             return res.status(404).json({ message: 'Livro não encontrado' });
         } 
-        res.json ({ book: rows[0] });
+        res.json ({ book: });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
