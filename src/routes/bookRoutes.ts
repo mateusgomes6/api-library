@@ -1,6 +1,6 @@
-const express = require('express');
+import express, { Router, Request, Response } from 'express';
 const router = express.Router();
-const bookController = require('../controllers/bookController');
+import * as bookController from '../controllers/bookController';
 
 //Listar todos os livros
 router.get('/books', bookController.getAllBooks);
@@ -17,6 +17,6 @@ router.put('/books/:id', bookController.updateBook);
 //Deletar livro
 router.delete('/books/:id', bookController.deleteBook);
 
-module.exports = router;
+export default router;
 
 
