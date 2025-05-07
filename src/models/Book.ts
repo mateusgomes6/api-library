@@ -8,7 +8,6 @@ class Book {
         } catch (error) {
             console.error('Erro ao buscar todos os livro:', error);
                     throw error;
-            }
         }
     }
 
@@ -33,6 +32,7 @@ class Book {
         } catch (error) {
             console.error('Error ao criar o livro', error);
             throw error;
+        }
     }
 
     static async update(id, bookData) {
