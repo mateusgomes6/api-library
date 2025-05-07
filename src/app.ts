@@ -1,9 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const bookRoutes = require('./routes/bookRoutes');
+import express, { Express, Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import bookRoutes from './routes/bookRoutes';
 
-const PORT = 3000;
-const app = express();
+const app: Express = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use('/api', bookRoutes);
