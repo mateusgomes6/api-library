@@ -32,14 +32,10 @@ exports.addBook = async (req, res) => {
 };
 
 exports.updateBook = async (req, res) => {
-    const id = req.params.id
-    const { titulo, autor, genero, ano_publicacao } = req.body;
+    const { id } = req.params;
     try {
-        const [result] = await db.execute(
-            'UPDATE books SET titulo = ?, autor = ?, genero = ?, ano_publicacao = ?, WHERE ID = ?',
-            [titulo, autor, genero, ano_publicacao, id]
-        );
-        if (result.affectedRows === 0) {
+        const affectedRows = await Book.update(id, req.body);
+        if (affectedRows === 0) {
             return res.status(404).json({ message: 'Livro não encontrado.' });
         }
         res.json({ message: 'Livro atualizado com sucesso.' });

@@ -7,7 +7,8 @@ class Book {
             return rows;
         } catch (error) {
             console.error('Erro ao buscar todos os livro:', error);
-            throw error;
+                    throw error;
+            }
         }
     }
 
@@ -21,8 +22,8 @@ class Book {
         }
     }
 
-    static async create(BookData) {
-        const { titulo, autor, genero, ano_publicacao } = req.body;
+    static async create(bookData) {
+        const { titulo, autor, genero, ano_publicacao } = bookData;
         try {
             const [result] = await db.execute(
                 'INSERT INTO books VALUES (?, ?, ?, ?)', 
@@ -32,6 +33,20 @@ class Book {
         } catch (error) {
             console.error('Error ao criar o livro', error);
             throw error;
+    }
+
+    static async update(id, bookData) {
+        const { titulo, autor, genero, ano_publicacao } = bookData;
+        try {
+            const [result] = await db.execute (
+                'UPDATE books SET titulo = ?, autor = ?, genero = ?, ano_publicacao = ?, WHERE ID = ?',
+                [titulo, autor, genero, ano_publicacao, id]
+            );
+            return result.affectedRows;
+        } catch (error) {
+            console.error('Erro ao atualizar o livro', error);
+            throw error;
+        }
     }
 
 }
