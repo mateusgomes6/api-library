@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import Book from '../models/Book';
 
 export const getAllBooks = async (req, res) => {
@@ -17,7 +16,7 @@ export const getBookById = async (req, res) => {
         if (!book) {
             return res.status(404).json({ message: 'Livro não encontrado' });
         } 
-        res.json ({ book: });
+        res.json ({ book });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
