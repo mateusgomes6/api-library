@@ -1,9 +1,9 @@
-const db = require('../database/db');
+const db = require('../models/Book');
 
 exports.getAllBooks = async (req, res) => {
     try {
-        const[rows] = await db.execute('SELECT * FROM books');
-        res.json({ books: rows});
+        const books = await Book.getAll()
+        res.json({ books });
     }   catch (err) {
         res.status(500).json({ error: err.message });
     }
