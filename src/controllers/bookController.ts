@@ -4,8 +4,8 @@ exports.getAllBooks = async (req, res) => {
     try {
         const books = await Book.getAll()
         res.json({ books });
-    }   catch (err) {
-        res.status(500).json({ error: err.message });
+    }   catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -17,8 +17,8 @@ exports.getBookById = async (req, res) => {
             return res.status(404).json({ message: 'Livro não encontrado' });
         } 
         res.json ({ book: });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -26,8 +26,8 @@ exports.addBook = async (req, res) => {
     try {
         const bookId = await Book.create(req.body);
         res.status(201).json({ id: bookId, message: 'Livro adicionado com sucesso.' });
-    } catch (err) {
-        res.status(500).json({ error: err.message })
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
 };
 
@@ -39,22 +39,20 @@ exports.updateBook = async (req, res) => {
             return res.status(404).json({ message: 'Livro não encontrado.' });
         }
         res.json({ message: 'Livro atualizado com sucesso.' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
 exports.deleteBook = async (req, res) => {
     const id = req.params.id;
     try {
-        const [result] = await db.execute(
-            'DELETE FROM books WHERE ID = ?', [id]
-        );
-        if (result.affectedRows === 0) {
-            res.status(404).json({ message: 'Livro não encontrado.' });
+        const affectedRows = await Book.delete(id);
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: 'Livro não encontrado.' });
         }
-        res.json({ message: 'Livro excluído com sucesso. '})
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.json({ message: 'Livro excluído com sucesso.' })
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };

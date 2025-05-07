@@ -49,6 +49,18 @@ class Book {
         }
     }
 
+    static async delete(id) {
+        try {
+            const [result] = await db.execute(
+                'DELETE FROM books WHERE ID = ?', [id]
+            );
+            return result.affectedRows;
+        } catch (error) {
+            console.error('Erro ao deletar o livro', error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = Book;
