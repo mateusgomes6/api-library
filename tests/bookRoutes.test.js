@@ -8,3 +8,7 @@ app.use(express.json());
 app.use('/api/books', bookRoutes);
 
 jest.mock('../src/models/Book');
+
+describe('Book Routes - successfully', () => {});
+
+describe('Book Routes - failure', () => {});
