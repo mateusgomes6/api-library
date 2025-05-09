@@ -38,7 +38,7 @@ describe('Book Model', () => {
         const livrosRomance = await Book.getByGenre('Romance');
 
         expect(db.execute).toHaveBeenCalledWith('SELECT * FROM books WHERE genero = ?', ['Romance']);
-        expect.livrosRomance.toEqual(livros);
+        expect(livrosRomance).toEqual(livros);
     });
 
     it('shoud call db.execute with the correct query and parameters when create is called', async () => {
@@ -48,7 +48,7 @@ describe('Book Model', () => {
 
         const bookId = await Book.create(bookData);
 
-        expect(db.execute).toHaveBeenCalledWith('INSERT INTO books VALUES (?, ?, ?, ?', 
+        expect(db.execute).toHaveBeenCalledWith('INSERT INTO books VALUES (?, ?, ?, ?)', 
             [bookData.titulo, bookData.autor, bookData.genero, bookData.ano_publicacao]
         );
         expect(bookId).toBe(mockInsertId);
