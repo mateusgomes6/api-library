@@ -9,7 +9,7 @@ beforeEach(() => {
 jest.mock('../../src/models/Book');
 
 describe('Book Controller - succesfully', () => {
-    it('getAllBooks should retr=urn a list of books with status 200', async () => {
+    it('getAllBooks should return a list of books with status 200', async () => {
         const mockBooks = [{ id: 1, titulo: 'Livro A', autor: 'Autor Z', genero: 'Gênero D', ano_publicacão: 2013}];
         Book.getAll.mockResolvedValue(mockBooks);
 
@@ -37,19 +37,6 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getById).toHaveBeenCalledWith(1);
     });
 
-    it('getBookById should return a book with status 404 if book is not found', async () => {
-        Book.getById.mockResolvedValue(undefined);
-
-        const req = httpMocks.createRequest({ params: { id: '99' } });
-        const res = httpMocks.createResponse();
-
-        await bookController.getBookById(req, res);
-
-        expect(res.statusCode).toBe(404);
-        expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' });
-        expect(Book.getById).toHaveBeenCalledWith(99);
-    });
-
     it('getBookByGenre should return a list of books of a specific genre with status 200', async () => {
         const mockBooks = [{ id: 2, titulo: 'Originals', autor: 'Adam Grant', genero: 'Investimento', ano_publicacão: 2017}];
         Book.getByGenre.mockResolvedValue(mockBooks);
@@ -65,6 +52,23 @@ describe('Book Controller - succesfully', () => {
         expect(res._getJSONData).toEqual({ books: mockBooks });
         expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
+    });
+});
+
+
+
+describe('Book Controler - failure', () => {
+    it('getBookById should return a book with status 404 if book is not found', async () => {
+        Book.getById.mockResolvedValue(undefined);
+
+        const req = httpMocks.createRequest({ params: { id: '99' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBookById(req, res);
+
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.getById).toHaveBeenCalledWith(99);
     });
 
     it('getByGenre should return an empty list with status 200 if no books of that genre are found', async () => {
@@ -98,10 +102,4 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Gênero F');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
-});
-
-
-
-describe('Book Controler - failure', () => {
-
 });
