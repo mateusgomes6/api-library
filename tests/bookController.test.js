@@ -58,6 +58,23 @@ describe('Book Controller - succesfully', () => {
 
 
 describe('Book Controler - failure', () => {
+    it('getAllBooks should return status 500 when database fails', async () => {
+        const errorMessage = 'Database connection failed';
+        Book.getAll.mockRejectedValue(new Error(errorMessage));
+    
+        const req = httpMocks.createRequest();
+        const res = httpMocks.createResponse();
+
+        await bookController.getAllBooks(req, res);
+
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({
+            error: 'Internal server error',
+            details: errorMessage
+        });
+        expect(Book.getAll).toHaveBeenCalledTimes(1);
+    });
+
     it('getBookById should return a book with status 404 if book is not found', async () => {
         Book.getById.mockResolvedValue(undefined);
 
