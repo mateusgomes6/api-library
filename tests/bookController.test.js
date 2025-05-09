@@ -66,6 +66,38 @@ describe('Book Controller - Get', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
+
+    it('getByGenre should return an empty list with status 200 if no books of that genre are found', async () => {
+        Book.getByGenre.mockResolvedValue([]);
+
+        const req = httpMocks.createRequest({
+            params: { genero: 'Gênero Z' },
+        });
+        const res = httpMocks.createResponse();
+
+        await bookController.getByGenre(req, res);
+
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData).toEqual({ books: [] });
+        expect(Book.getByGenre).toHaveBeenCalledWith('Gênero E');
+        expect(Book.getByGenre).toHaveBeenCalledTimes(1);
+    });
+
+    it('getByGenre should return status 500 if an error occurs', async () => {
+        Book.getByGenre.mockRejectedValue(new Error('Erro ao buscar livros'));
+
+        const req = httpMocks.createRequest({
+            params: { genero: 'Gênero F' },
+        });
+        const res = httpMocks.createResponse();
+    
+        await bookController.getByGenre(req, res);
+    
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({ message: 'Erro ao buscar livros' });
+        expect(Book.getByGenre).toHaveBeenCalledWith('Gênero F');
+        expect(Book.getByGenre).toHaveBeenCalledTimes(1);
+    });
 });
 
 
