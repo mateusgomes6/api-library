@@ -122,6 +122,20 @@ describe('Book Model - failure', () => {
 });
 
 describe('Book Model - special cases', () => {
-
+    it('should return empty array when no books found', async () => {
+        db.execute.mockResolvedValue([[]]);
+  
+        const result = await Book.getByGenre('Não-Existente');
+  
+        expect(result).toEqual([]);
+    });
+  
+      it('should return 0 affectedRows when updating non-existent book', async () => {
+        db.execute.mockResolvedValue([{ affectedRows: 0 }]);
+  
+        const result = await Book.update(999, { titulo: 'Título' });
+  
+        expect(result).toBe(0);
+    });
 });
 
