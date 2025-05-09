@@ -222,4 +222,38 @@ describe('Book Controler - failure', () => {
         expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
         expect(Book.update).toHaveBeenCalledTimes(1);
     });
+
+    it('delete should return status 404 if the book to delete is not found (destroy returns 0)', async () => {
+        const bookId = 7;
+        Book.destroy.mockResolvedValue(0); // Simula que nenhum registro foi deletado
+    
+        const req = httpMocks.createRequest({
+            params: { id: bookId },
+        });
+        const res = httpMocks.createResponse();
+    
+        await bookController.delete(req, res);
+    
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' }); // Adapte a mensagem conforme sua implementação
+        expect(Book.destroy).toHaveBeenCalledWith({ where: { id: bookId } });
+        expect(Book.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('delete should return status 500 if an error occurs during deletion', async () => {
+        const bookId = 8;
+        Book.destroy.mockRejectedValue(new Error('Erro ao deletar livro'));
+    
+        const req = httpMocks.createRequest({
+            params: { id: bookId },
+        });
+        const res = httpMocks.createResponse();
+    
+        await bookController.delete(req, res);
+    
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({ message: 'Erro ao deletar livro' }); // Adapte a mensagem conforme sua implementação
+        expect(Book.destroy).toHaveBeenCalledWith({ where: { id: bookId } });
+        expect(Book.destroy).toHaveBeenCalledTimes(1);
+    });
 });
