@@ -8,7 +8,7 @@ beforeEach(() => {
 
 jest.mock('../../src/models/Book');
 
-describe('Book Controller', () => {
+describe('Book Controller - Get', () => {
     it('getAllBooks should retr=urn a list of books with status 200', async () => {
         const mockBooks = [{ id: 1, titulo: 'Livro A', autor: 'Autor Z', genero: 'Gênero D', ano_publicacão: 2013}];
         Book.getAll.mockResolvedValue(mockBooks);
@@ -66,4 +66,6 @@ describe('Book Controller', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
+
+    it('')
 });
