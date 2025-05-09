@@ -67,5 +67,16 @@ describe('Book Model', () => {
         );
         expect(affectedRows).toBe(mockAffectedRows);
     });
+
+    it('shoud call db.execute with the correct query and parameters when delete is called', async () => {
+        const bookIdToDelete = 3;
+        const mockAffectedRows = 1;
+        db.execute.mockResolvedValue([{ affectedRows: mockAffectedRows }]);
+
+        const affectedRows = await Book.delete(bookIdToDelete);
+
+        expect(db.execute).toHaveBeenCalledWith('DELETE FROM books WHERE id = ?', [bookIdToDelete]);
+        expect(affectedRows).toBe(mockAffectedRows);
+    });
 });
 
