@@ -25,11 +25,22 @@ describe('Book Routes - successfully', () => {
         const mockBook = { id: 1, titulo: 'Livro U', autor: 'Autor L', genero: 'Gênero C', ano_publicacao: 1988 };
         Book.getById.mockResolvedValue(mockBook);
 
-        const response = await request(app).get('/api/boks/:id');
+        const response = await request(app).get('/api/books/:id');
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ book: mockBook });
         expect(Book.getById).toHaveBeenCalledWith(1);
+    });
+
+    it('should return a book on GET /api/genre/:genero if found', async () => {
+        const mockBook = { id: 1, titulo: 'Hackeando Tudo', autor: 'Raiam Santos', genero: 'Desenvolvimento pessoal', ano_publicacao: 1988 };
+        Book.getByGenre.mockResolvedValue(mockBook);
+
+        const response = await request(app).get('/api/books/genre/Desenvolvimento Pessoal');
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({ book: mockBook });
+        expect(Book.getByGenre).toHaveBeenCalledWith('Desenvolvimento pessoal');
     });
 });
 
