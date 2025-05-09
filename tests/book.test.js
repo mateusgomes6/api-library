@@ -92,7 +92,14 @@ describe('Book Model - failure', () => {
         db.execute.mockRejectedValue(new Error('Invalid query'));
   
         await expect(Book.getById(1)).rejects.toThrow('Invalid query');
-      });
+    });
+
+    it('should throw an error when getByGenre fails', async () => {
+        db.execute.mockRejectedValue(new Error('Genre not found'));
+  
+        await expect(Book.getByGenre('Invalid')).rejects.toThrow('Genre not found');
+        expect(db.execute).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('Book Model - special cases', () => {
