@@ -206,6 +206,45 @@ describe('Book Controler - failure', () => {
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
+    it('createBook should return status 400 if data is invalid', async () => {
+        const invalidBookData = { titulo: 'Livro R', autor: 'Autor Y', genero: 'Gênero C', ano_publicacao: 1999 };
+      
+        const req = httpMocks.createRequest({
+          method: 'POST',
+          url: '/books',
+          body: invalidBookData,
+        });
+        const res = httpMocks.createResponse();
+      
+        await bookController.createBook(req, res);
+      
+        expect(res.statusCode).toBe(400);
+        expect(res._getJSONData()).toHaveProperty('error');
+        expect(res._getJSONData().error).toContain('Título é obrigatório');
+        expect(Book.create).not.toHaveBeenCalled();
+    });
+
+    it('createBook should return status 500 if database operation fails', async () => {
+        const newBookData = { titulo: 'Livro B', autor: 'Autor X', genero: 'Gênero B', ano_publicacão: 2022 };
+        const mockError = new Error('Erro ao salvar no banco de dados');
+        Book.create.mockRejectedValue(mockError);
+      
+        const req = httpMocks.createRequest({
+          method: 'POST',
+          url: '/books',
+          body: newBookData,
+        });
+        const res = httpMocks.createResponse();
+      
+        await bookController.createBook(req, res);
+      
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toHaveProperty('error');
+        expect(res._getJSONData().error).toBe('Erro ao criar o livro');
+        expect(Book.create).toHaveBeenCalledTimes(1);
+        expect(Book.create).toHaveBeenCalledWith(newBookData);
+    });
+
     it('update should return status 404 if the book to update is not found', async () => {
         const bookId = 4;
         const updatedBookData = { titulo: 'Novo Título' };
