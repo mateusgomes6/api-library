@@ -54,6 +54,31 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
+    it('createBook should create a new book and return it with status 201', async () => {
+        const newBookData = {
+            titulo: 'Novo livro',
+            autor: 'Novo autor',
+            genero: 'Novo gênero',
+            ano_publicacao: 2025,
+        };
+        const mockCreatedBook = { id: 2, ...newBookData }
+        Book.create.mockResolvedValue(mockCreatedBook);
+
+        const req = httpMocks.createRequest({
+            method: 'POST',
+            url: '/books',
+            body: newBookData,
+        });
+        const res = httpMocks.createResponse();
+
+        await bookController.create(req, res);
+
+        expect(res.statusCode).toBe(201);
+        expect(res._getJSONData).toEqual({ book: mockCreatedBook });
+        expect(Book.create).toHaveBeenCalledTimes(1);
+        expect(Book.create).toHaveBeenCalledWith(newBookData);
+    });
+
     it('update should update a book and return it with status 200', async () => {
         const bookId = 3;
         const updatedBookData = { titulo: 'Livro Q', ano_publicacão: 2004};
@@ -86,7 +111,7 @@ describe('Book Controller - succesfully', () => {
         });
         const res = httpMocks.createResponse();
 
-        await bookController.delte(req, res);
+        await bookController.delete(req, res);
 
         expect(res.statusCode).toBe(204);
         expect(res._isEndCalled()).toBe(true);
