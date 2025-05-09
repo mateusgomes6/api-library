@@ -54,7 +54,7 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
-    it('createBook should create a new book and return it with status 201', async () => {
+    it('addBook should create a new book and return it with status 201', async () => {
         const newBookData = {
             titulo: 'Novo livro',
             autor: 'Novo autor',
@@ -79,7 +79,7 @@ describe('Book Controller - succesfully', () => {
         expect(Book.create).toHaveBeenCalledWith(newBookData);
     });
 
-    it('update should update a book and return it with status 200', async () => {
+    it('updateBook should update a book and return it with status 200', async () => {
         const bookId = 3;
         const updatedBookData = { titulo: 'Livro Q', ano_publicacão: 2004};
         const mockUpdatedBook = { id: bookId, ...updatedBookData, autor: 'Autor Y', genero: 'Gênero I'};
@@ -102,7 +102,7 @@ describe('Book Controller - succesfully', () => {
         expect(Book.update).toHaveBeenCalledTimes(1);
     });
 
-    it('delete should delete a book and return status 204', async () => {
+    it('deleteBook should delete a book and return status 204', async () => {
         const bookId = 5;
         Book.destroy.mockResolvedValue(1);
 
@@ -122,7 +122,7 @@ describe('Book Controller - succesfully', () => {
 
 
 
-describe('Book Controler - failure', () => {
+describe('Book Controller - failure', () => {
     it('getAllBooks should return status 500 when database fails', async () => {
         const errorMessage = 'Database connection failed';
         Book.getAll.mockRejectedValue(new Error(errorMessage));
@@ -140,7 +140,7 @@ describe('Book Controler - failure', () => {
         expect(Book.getAll).toHaveBeenCalledTimes(1);
     });
 
-    it('should return 404 when no books are found', async () => {
+    it('getAllBooks should return 404 when no books are found', async () => {
         Book.getAll.mockResolvedValue([]);
         
         await bookController.getAllBooks(req, res);
@@ -151,7 +151,7 @@ describe('Book Controler - failure', () => {
         });
     });
 
-    it('should return correct error structure', async () => {
+    it('getAllBooks should return correct error structure', async () => {
         Book.getAll.mockRejectedValue(new Error('DB timeout'));
         
         await bookController.getAllBooks(req, res);
@@ -186,7 +186,7 @@ describe('Book Controler - failure', () => {
 
         expect(res.statusCode).toBe(200);
         expect(res._getJSONData).toEqual({ books: [] });
-        expect(Book.getByGenre).toHaveBeenCalledWith('Gênero E');
+        expect(Book.getByGenre).toHaveBeenCalledWith('Gênero Z');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
@@ -206,7 +206,7 @@ describe('Book Controler - failure', () => {
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
-    it('createBook should return status 400 if data is invalid', async () => {
+    it('addBook should return status 400 if data is invalid', async () => {
         const invalidBookData = { titulo: 'Livro R', autor: 'Autor Y', genero: 'Gênero C', ano_publicacao: 1999 };
       
         const req = httpMocks.createRequest({
@@ -216,7 +216,7 @@ describe('Book Controler - failure', () => {
         });
         const res = httpMocks.createResponse();
       
-        await bookController.createBook(req, res);
+        await bookController.create(req, res);
       
         expect(res.statusCode).toBe(400);
         expect(res._getJSONData()).toHaveProperty('error');
@@ -224,7 +224,7 @@ describe('Book Controler - failure', () => {
         expect(Book.create).not.toHaveBeenCalled();
     });
 
-    it('createBook should return status 500 if database operation fails', async () => {
+    it('addBook should return status 500 if database operation fails', async () => {
         const newBookData = { titulo: 'Livro B', autor: 'Autor X', genero: 'Gênero B', ano_publicacão: 2022 };
         const mockError = new Error('Erro ao salvar no banco de dados');
         Book.create.mockRejectedValue(mockError);
@@ -236,7 +236,7 @@ describe('Book Controler - failure', () => {
         });
         const res = httpMocks.createResponse();
       
-        await bookController.createBook(req, res);
+        await bookController.create(req, res);
       
         expect(res.statusCode).toBe(500);
         expect(res._getJSONData()).toHaveProperty('error');
@@ -245,7 +245,7 @@ describe('Book Controler - failure', () => {
         expect(Book.create).toHaveBeenCalledWith(newBookData);
     });
 
-    it('update should return status 404 if the book to update is not found', async () => {
+    it('updateBook should return status 404 if the book to update is not found', async () => {
         const bookId = 4;
         const updatedBookData = { titulo: 'Novo Título' };
         Book.findById.mockResolvedValue(null);
@@ -265,7 +265,7 @@ describe('Book Controler - failure', () => {
         expect(Book.update).not.toHaveBeenCalled();
     });
 
-    it('update should return status 500 if an error occurs during update', async () => {
+    it('updateBook should return status 500 if an error occurs during update', async () => {
         const bookId = 5;
         const updatedBookData = { titulo: 'Novo Título' };
         Book.findById.mockResolvedValue({ id: bookId, titulo: 'Título Antigo', autor: 'Autor X', genero: 'Gênero C', ano_publicacão: 2010 });
@@ -287,7 +287,7 @@ describe('Book Controler - failure', () => {
         expect(Book.update).toHaveBeenCalledTimes(1);
     });
 
-    it('delete should return status 404 if the book to delete is not found (destroy returns 0)', async () => {
+    it('deleteBook should return status 404 if the book to delete is not found (destroy returns 0)', async () => {
         const bookId = 7;
         Book.destroy.mockResolvedValue(0); // Simula que nenhum registro foi deletado
     
@@ -304,7 +304,7 @@ describe('Book Controler - failure', () => {
         expect(Book.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it('delete should return status 500 if an error occurs during deletion', async () => {
+    it('deleteBook should return status 500 if an error occurs during deletion', async () => {
         const bookId = 8;
         Book.destroy.mockRejectedValue(new Error('Erro ao deletar livro'));
     
