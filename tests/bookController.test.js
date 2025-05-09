@@ -83,8 +83,8 @@ describe('Book Controller - succesfully', () => {
         const bookId = 3;
         const updatedBookData = { titulo: 'Livro Q', ano_publicacão: 2004};
         const mockUpdatedBook = { id: bookId, ...updatedBookData, autor: 'Autor Y', genero: 'Gênero I'};
-        Book.update.mockRejectedValue(mockUpdatedBook);
-        Book.findById.mockResolvedValue(mockUpdatedBook);
+        Book.update.mockResolvedValue([1]);
+        Book.getById.mockResolvedValue(mockUpdatedBook);
 
         const req = httpMocks.createRequest({
             params: { id: bookId },
