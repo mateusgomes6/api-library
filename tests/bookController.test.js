@@ -163,4 +163,46 @@ describe('Book Controler - failure', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Gênero F');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
+
+    it('update should return status 404 if the book to update is not found', async () => {
+        const bookId = 4;
+        const updatedBookData = { titulo: 'Novo Título' };
+        Book.findById.mockResolvedValue(null);
+    
+        const req = httpMocks.createRequest({
+            params: { id: bookId },
+            body: updatedBookData,
+        });
+        const res = httpMocks.createResponse();
+    
+        await bookController.update(req, res);
+    
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.findById).toHaveBeenCalledWith(bookId);
+        expect(Book.findById).toHaveBeenCalledTimes(1);
+        expect(Book.update).not.toHaveBeenCalled();
+    });
+
+    it('update should return status 500 if an error occurs during update', async () => {
+        const bookId = 5;
+        const updatedBookData = { titulo: 'Novo Título' };
+        Book.findById.mockResolvedValue({ id: bookId, titulo: 'Título Antigo', autor: 'Autor X', genero: 'Gênero C', ano_publicacão: 2010 });
+        Book.update.mockRejectedValue(new Error('Erro ao atualizar livro'));
+    
+        const req = httpMocks.createRequest({
+            params: { id: bookId },
+            body: updatedBookData,
+        });
+        const res = httpMocks.createResponse();
+    
+        await bookController.update(req, res);
+    
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({ message: 'Erro ao atualizar livro' }); 
+        expect(Book.findById).toHaveBeenCalledWith(bookId);
+        expect(Book.findById).toHaveBeenCalledTimes(1);
+        expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
+        expect(Book.update).toHaveBeenCalledTimes(1);
+    });
 });
