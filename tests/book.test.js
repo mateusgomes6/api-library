@@ -100,6 +100,13 @@ describe('Book Model - failure', () => {
         await expect(Book.getByGenre('Invalid')).rejects.toThrow('Genre not found');
         expect(db.execute).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw error when create fails with invalid data', async () => {
+        const invalidBookData = { titulo: null };
+        db.execute.mockRejectedValue(new Error('Invalid data'));
+  
+        await expect(Book.create(invalidBookData)).rejects.toThrow('Invalid data');
+    });
 });
 
 describe('Book Model - special cases', () => {
