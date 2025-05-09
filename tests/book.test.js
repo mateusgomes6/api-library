@@ -81,10 +81,15 @@ describe('Book Model - successfully', () => {
 });
 
 describe('Book Model - failure', () => {
-
+    it('should throw an error when getAll fails', async () => {
+        db.execute.mockRejectedValue(new Error('Database connection failed'));
+  
+        await expect(Book.getAll()).rejects.toThrow('Database connection failed');
+        expect(db.execute).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('Book Model - special cases', () => {
-    
+
 });
 
