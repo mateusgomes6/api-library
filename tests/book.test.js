@@ -107,6 +107,12 @@ describe('Book Model - failure', () => {
   
         await expect(Book.create(invalidBookData)).rejects.toThrow('Invalid data');
     });
+
+    it('should throw error when update fails', async () => {
+        db.execute.mockRejectedValue(new Error('Update failed'));
+  
+        await expect(Book.update(999, {})).rejects.toThrow('Update failed');
+    });
 });
 
 describe('Book Model - special cases', () => {
