@@ -56,4 +56,14 @@ describe('Book Routes - successfully', () => {
     });
 });
 
-describe('Book Routes - failure', () => {});
+describe('Book Routes - failure', () => {
+    it('should return an error if required fields are missing on POST /api/books', async () => {
+        const invalidBook = { titulo: 'Livro I', autor: 'Autor Z', genero: 'Gênero Q', ano_publicacao: 2005 };
+
+        const response = await request(app).post('/api/books').send(invalidBook);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toHaveProperty('error');
+        expect(Book.create).not.toHaveBeenCalled();
+    });
+});
