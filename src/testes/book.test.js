@@ -41,5 +41,17 @@ describe('Book Model', () => {
         expect.livrosRomance.toEqual(livros);
     });
 
+    it('shoud call db.execute with the correct query and parameters when create is called', async () => {
+        const bookData = { titulo: 'Livro B', autor: 'Autor Y', genero: 'Gênero M', ano_publicacao: 20/10/2009 };
+        const mockInsertId = 2;
+        db.execute.mockResolvedValue([{ insertId: mockInsertId }]);
+
+        const bookId = await Book.create(bookData);
+
+        expect(db.execute).toHaveBeenCalledWith('INSERT INTO books VALUES (?, ?, ?, ?', 
+            [bookData.titulo, bookData.autor, bookData.genero, bookData.ano_publicacao]
+        );
+        expect(bookId).toBe(mockInsertId);
+    });
 });
 
