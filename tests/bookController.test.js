@@ -53,6 +53,8 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
+
+
 });
 
 
@@ -73,6 +75,17 @@ describe('Book Controler - failure', () => {
             details: errorMessage
         });
         expect(Book.getAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 404 when no books are found', async () => {
+        Book.getAll.mockResolvedValue([]);
+        
+        await bookController.getAllBooks(req, res);
+        
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({
+            error: 'No books found'
+        });
     });
 
     it('getBookById should return a book with status 404 if book is not found', async () => {
