@@ -49,4 +49,21 @@ describe('Book Controller', () => {
         expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' });
         expect(Book.getById).toHaveBeenCalledWith(99);
     });
+
+    it('getBookByGenre should return a list of books of a specific genre with status 200', async () => {
+        const mockBooks = [{ id: 2, titulo: 'Originals', autor: 'Adam Grant', genero: 'Investimento', ano_publicacão: 2017}];
+        Book.getByGenre.mockResolvedValue(mockBooks);
+
+        const req = httpMocks.createRequest({
+            params: { genero: 'Investimento' }
+        });
+        const res = httpMocks.createResponse();
+
+        await bookController.getByGenre(req, res);
+
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData).toEqual({ books: mockBooks });
+        expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
+        expect(Book.getByGenre).toHaveBeenCalledTimes(1);
+    });
 });
