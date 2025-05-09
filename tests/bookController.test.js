@@ -54,7 +54,28 @@ describe('Book Controller - succesfully', () => {
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
 
+    it('update should update a book and return it with status 200', async () => {
+        const bookId = 3;
+        const updatedBookData = { titulo: 'Livro Q', ano_publicacão: 2004};
+        const mockUpdatedBook = { id: bookId, ...updatedBookData, autor: 'Autor Y', genero: 'Gênero I'};
+        Book.update.mockRejectedValue(mockUpdatedBook);
+        Book.findById.mockResolvedValue(mockUpdatedBook);
 
+        const req = httpMocks.createRequest({
+            params: { id: bookId },
+            body: updatedBookData
+        });
+        const res = httpMocks.createResponse();
+
+        await bookController.update(req, res);
+
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual({ book: mockUpdatedBook });
+        expect(Book.findById).toHaveBeenCalledWith(bookId);
+        expect(Book.findById).toHaveBeenCalledTimes(1);
+        expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
+        expect(Book.update).toHaveBeenCalledTimes(1);
+    });
 });
 
 
