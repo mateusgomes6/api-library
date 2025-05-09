@@ -1,5 +1,5 @@
-const Book = require ('../models/Book');
-const db = require ('../database/db');
+const Book = require ('../src/models/Book');
+const db = require ('../src/database/db');
 
 beforeEach(() => {
     jest.clearAllMocks();
