@@ -66,6 +66,10 @@ describe('Book Controller - Get', () => {
         expect(Book.getByGenre).toHaveBeenCalledWith('Investimento');
         expect(Book.getByGenre).toHaveBeenCalledTimes(1);
     });
+});
 
-    it('')
+
+
+describe('Book Controler - Post, Put and Delete', () => {
+
 });
