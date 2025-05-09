@@ -54,6 +54,19 @@ describe('Book Routes - successfully', () => {
         expect(response.body).toEqual({ book: mockCreatedBook });
         expect(Book.create).toHaveBeenCalledWith(newBookData);
     });
+
+    it('should update a book on PUT /api/books/:id if found', async () => {
+        const bookId = 1;
+        const updatedBookData = { titulo: 'Novo Título', autor: 'Novo Autor', genero: 'Novo Gênero', ano_publicacao: 1999 };
+        const mockUpdatedBook = { id: bookId, ...updatedBookData };
+        Book.update.mockResolvedValue(mockUpdatedBook);
+
+        const response = await request(app).put('/api/books/:id').send(updatedBookData);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({ book: mockUpdatedBook });
+        expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
+    });
 });
 
 describe('Book Routes - failure', () => {
