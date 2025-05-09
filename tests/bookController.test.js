@@ -22,4 +22,31 @@ describe('Book Controller', () => {
         expect(res._getJSONData()).toEqual({ books: mockBooks });
         expect(Book.getAll).toHaveBeenCalledTimes(1);
     });
+
+    it('getBookById should return a book with status 200 if found', async () => {
+        const mockBook = { id: 1, titulo: 'Livro Y', autor: 'Autor S', genero: 'Gênero K', ano_publicacão: 2021};
+        Book.getById.mockResolvedValue(mockBook);
+
+        const req = httpMocks.createRequest({ params: { id: '1' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBookById(req, res);
+        
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual({ book: mockBook });
+        expect(Book.getById).toHaveBeenCalledWith(1);
+    });
+
+    it('getBookById should return a book with status 404 if book is not found', async () => {
+        Book.getById.mockResolvedValue(undefined);
+
+        const req = httpMocks.createRequest({ params: { id: '99' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBookById(req, res);
+
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.getById).toHaveBeenCalledWith(99);
+    });
 });
