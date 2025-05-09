@@ -1,12 +1,12 @@
-const bookController = require('../controllers/bookController');
-const Book = require('../models/Book');
+const bookController = require('../src/controllers/bookController');
+const Book = require('../src/models/Book');
 const httpMocks = require('node-mocks-http');
 
 beforeEach(() => {
     jest.clearAllMocks();
 })
 
-jest.mock('../../src/models/Book');
+jest.mock('../src/models/Book');
 
 describe('Book Controller - succesfully', () => {
     it('getAllBooks should return a list of books with status 200', async () => {
