@@ -76,6 +76,23 @@ describe('Book Controller - succesfully', () => {
         expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
         expect(Book.update).toHaveBeenCalledTimes(1);
     });
+
+    it('delete should delete a book and return status 204', async () => {
+        const bookId = 5;
+        Book.destroy.mockResolvedValue(1);
+
+        const req = httpMocks.createRequest({
+            params: { id: bookId }
+        });
+        const res = httpMocks.createResponse();
+
+        await bookController.delte(req, res);
+
+        expect(res.statusCode).toBe(204);
+        expect(res._isEndCalled()).toBe(true);
+        expect(Book.destroy).toHaveBeenCalledWith({ where: { id: bookId } });
+        expect(Book.destroy).toHaveBeenCalledTimes(1);
+    });
 });
 
 
