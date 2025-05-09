@@ -88,6 +88,16 @@ describe('Book Controler - failure', () => {
         });
     });
 
+    it('should return correct error structure', async () => {
+        Book.getAll.mockRejectedValue(new Error('DB timeout'));
+        
+        await bookController.getAllBooks(req, res);
+        
+        const responseData = res._getJSONData();
+        expect(responseData).toHaveProperty('error');
+        expect(responseData).toHaveProperty('details');
+    });
+
     it('getBookById should return a book with status 404 if book is not found', async () => {
         Book.getById.mockResolvedValue(undefined);
 
