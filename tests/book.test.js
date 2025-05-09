@@ -113,6 +113,12 @@ describe('Book Model - failure', () => {
   
         await expect(Book.update(999, {})).rejects.toThrow('Update failed');
     });
+
+    it('should throw error when delete fails', async () => {
+        db.execute.mockRejectedValue(new Error('Delete failed'));
+  
+        await expect(Book.delete(999)).rejects.toThrow('Delete failed');
+    });
 });
 
 describe('Book Model - special cases', () => {
