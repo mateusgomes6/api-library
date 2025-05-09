@@ -87,6 +87,12 @@ describe('Book Model - failure', () => {
         await expect(Book.getAll()).rejects.toThrow('Database connection failed');
         expect(db.execute).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw an error when getById fails', async () => {
+        db.execute.mockRejectedValue(new Error('Invalid query'));
+  
+        await expect(Book.getById(1)).rejects.toThrow('Invalid query');
+      });
 });
 
 describe('Book Model - special cases', () => {
