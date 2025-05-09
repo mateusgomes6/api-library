@@ -7,7 +7,7 @@ beforeEach(() => {
 
 db.execute = jest.fn();
 
-describe('Book Model', () => {
+describe('Book Model - successfully', () => {
     it('shoud call db.execute with the correct query and parameters when getAll is called', async () => {
         const mockBooks = [{ id: 1, titulo: 'Livro A', autor: 'Autor X', genero: 'Gênero Z', ano_publicacao: 2018 }];
         db.execute.mockResolvedValue([mockBooks]);
@@ -78,5 +78,13 @@ describe('Book Model', () => {
         expect(db.execute).toHaveBeenCalledWith('DELETE FROM books WHERE id = ?', [bookIdToDelete]);
         expect(affectedRows).toBe(mockAffectedRows);
     });
+});
+
+describe('Book Model - failure', () => {
+
+});
+
+describe('Book Model - special cases', () => {
+    
 });
 
