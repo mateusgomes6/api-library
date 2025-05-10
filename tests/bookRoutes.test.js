@@ -32,18 +32,18 @@ describe('Book Routes - successfully', () => {
         expect(Book.getById).toHaveBeenCalledWith(1);
     });
 
-    it('should create a book on GET /api/books/genre/:genero if found', async () => {
-        const mockBook = { id: 1, titulo: 'Hackeando Tudo', autor: 'Raiam Santos', genero: 'Desenvolvimento pessoal', ano_publicacao: 1988 };
-        Book.getByGenre.mockResolvedValue(mockBook);
+    it('should return a book on GET /api/books/genre/:genero if found', async () => {
+        const mockBooks = [{ id: 1, titulo: 'Hackeando Tudo', autor: 'Raiam Santos', genero: 'Desenvolvimento pessoal', ano_publicacao: 1988 }];
+        Book.getByGenre.mockResolvedValue(mockBooks);
 
         const response = await request(app).get('/api/books/genre/Desenvolvimento Pessoal');
 
         expect(response.statusCode).toBe(200);
-        expect(response.body).toEqual({ book: mockBook });
+        expect(response.body).toEqual({ books: mockBooks });
         expect(Book.getByGenre).toHaveBeenCalledWith('Desenvolvimento pessoal');
     });
 
-    it('should return a book on POST /api/books if found', async () => {
+    it('should crete a book on POST /api/books if found', async () => {
         const newBookData = { titulo: 'Livro F', autor: 'Autor T', genero: 'Gênero W', ano_publicacao: 2019 };
         const mockCreatedBook = ({ id: 2, ...newBookData });
         Book.create.mockResolvedValue(mockCreatedBook);
@@ -113,7 +113,7 @@ describe('Book Routes - failure', () => {
       });
 
     it('should return an error if required fields are missing on POST /api/books', async () => {
-        const invalidBook = { titulo: 'Livro I', autor: 'Autor Z', genero: 'Gênero Q', ano_publicacao: 2005 };
+        const invalidBook = { titulo: 'Livro Incompleto' };
 
         const response = await request(app).post('/api/books').send(invalidBook);
 
