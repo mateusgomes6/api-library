@@ -1,4 +1,5 @@
 import Book from '../models/Book';
+import { Request, Response } from 'express';
 
 export const getAllBooks = async (req, res) => {
     try {
@@ -29,6 +30,22 @@ export const getBookByGenre = async (req, res) => {
         res.json({ book });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const getBooksPaginated = async (req: Request, res: Response) => {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+      return res.status(400).json({ error: 'Parâmetros de página ou limite inválidos.' });
+    }
+
+    try {
+      const results = await Book.getAllPaginated(page, limit);
+      res.json(results);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
 };
 
