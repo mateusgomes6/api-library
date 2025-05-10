@@ -113,4 +113,15 @@ describe('Book Routes - failure', () => {
         expect(response.body).toEqual({ message: 'Erro de validação' });
         expect(Book.update).toHaveBeenCalledWith(bookId, invalidBookData);
     });
+
+    it('should return a 404 Not Found on DELETE /api/books/:id if the book does not exist', async () => {
+        Book.deleteById.mockResolvedValue(false);
+    
+        const nonExistentBookId = 99;
+        const response = await request(app).delete(`/api/books/${nonExistentBookId}`);
+    
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.deleteById).toHaveBeenCalledWith(nonExistentBookId);
+    });
 });
