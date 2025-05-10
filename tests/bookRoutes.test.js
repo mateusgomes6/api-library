@@ -156,3 +156,52 @@ describe('Book Routes - failure', () => {
         expect(Book.deleteById).toHaveBeenCalledWith(nonExistentBookId);
     });
 });
+
+describe('Book Routes - /api/books/paginated', () => {
+    it('should return paginated books with default page and limit', async () => {
+        const mockResults = { items: [{ id: 1, title: 'Livro 1' }], totalItems: 1, totalPages: 1, currentPage: 1, pageSize: 10 };
+        Book.getAllPaginated.mockResolvedValue(mockResults);
+
+        const response = await request(app).get('/api/books/paginated');
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(mockResults);
+        expect(Book.getAllPaginated).toHaveBeenCalledWith(1, 10);
+    });
+
+    it('should return paginated books with provided page and limit', async () => {
+        const mockResults = { items: [{ id: 11, title: 'Livro 11' }], totalItems: 50, totalPages: 5, currentPage: 2, pageSize: 20 };
+        Book.getAllPaginated.mockResolvedValue(mockResults);
+
+        const response = await request(app).get('/api/books/paginated?page=2&limit=20');
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(mockResults);
+        expect(Book.getAllPaginated).toHaveBeenCalledWith(2, 20);
+    });
+
+    it('should return 400 for invalid page parameter', async () => {
+        const response = await request(app).get('/api/books/paginated?page=abc');
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ error: 'Parâmetros de página ou limite inválidos.' });
+        expect(Book.getAllPaginated).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 for invalid limit parameter', async () => {
+        const response = await request(app).get('/api/books/paginated?limit=xyz');
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ error: 'Parâmetros de página ou limite inválidos.' });
+        expect(Book.getAllPaginated).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors from the controller (via model)', async () => {
+        Book.getAllPaginated.mockRejectedValue(new Error('Model error'));
+
+        const response = await request(app).get('/api/books/paginated?page=1&limit=10');
+
+        expect(response.statusCode).toBe(500);
+        expect(response.body).toEqual({ error: 'Model error' });
+    });
+});
