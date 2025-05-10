@@ -81,6 +81,16 @@ describe('Book Routes - successfully', () => {
 });
 
 describe('Book Routes - failure', () => {
+    it('should return 404 on GET /api/books/:id if not found', async () => {
+        Book.getById.mockResolvedValue(undefined);
+    
+        const response = await request(app).get('/api/books/99');
+    
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.getById).toHaveBeenCalledWith(99);
+    });
+
     it('should return an error if required fields are missing on POST /api/books', async () => {
         const invalidBook = { titulo: 'Livro I', autor: 'Autor Z', genero: 'Gênero Q', ano_publicacao: 2005 };
 
