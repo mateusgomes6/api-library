@@ -81,6 +81,16 @@ describe('Book Routes - successfully', () => {
 });
 
 describe('Book Routes - failure', () => {
+    it('should return 500 on GET /api/books if there is a server error', async () => {
+        Book.getAll.mockRejectedValue(new Error('Erro inesperado no banco de dados'));
+      
+        const response = await request(app).get('/api/books');
+      
+        expect(response.statusCode).toBe(500);
+        expect(response.body).toEqual({ message: 'Erro interno do servidor' });
+        expect(Book.getAll).toHaveBeenCalledTimes(1);
+    });
+
     it('should return 404 on GET /api/books/:id if not found', async () => {
         Book.getById.mockResolvedValue(undefined);
     
