@@ -60,19 +60,42 @@ class Book {
     }
   }
 
-  static async create(bookData) {
+  static async create(bookData: {titulo: string; autor: string; genero: string; ano_publicacao: number}) {
+    // Validação do bookData
+    if (!bookData) {
+      throw new Error("Dados do livro não fornecidos");
+    }
     const { titulo, autor, genero, ano_publicacao } = bookData;
+    const currentYear = new Date().getFullYear();
+
+    // Validações dos campos
+    if (!titulo || !autor || !genero || !ano_publicacao) {
+      throw new Error("Todos os campos são obrigatórios");
+    }
+    if (!titulo?.trim()) throw new Error("Título do livro é obrigatório");
+    if (!autor?.trim()) throw new Error("Autor do livro é obrigatório");
+    if (!genero?.trim()) throw new Error("Gênero do livro é obrigatório");
+    if (typeof ano_publicacao !== "number" || isNaN(ano_publicacao)) {
+      throw new Error("Ano de publicação deve ser um número válido");
+    }
+    if (ano_publicacao <= 0 || ano_publicacao > currentYear + 1) {
+      throw new Error(`Ano de publicação deve estar entre 1 e ${currentYear + 1}`);
+    }
+    
     try {
       const [result] = await db.execute(
-        "INSERT INTO books VALUES (?, ?, ?, ?)",
-        [titulo, autor, genero, ano_publicacao]
+        "INSERT INTO books (titulo, autor, genero, ano_publicacao) VALUES (?, ?, ?, ?)",
+        [titulo.trim(), autor.trim(), genero.trim(), ano_publicacao]
       );
-      return result.insertId;
-    } catch (error) {
-      console.error("Error ao criar o livro", error);
-      throw error;
+      return result.insertId; 
+    } catch (error: any) {
+      if (error.code === "ER_DUP_ENTRY") {
+        throw new Error("Já existe um livro com este título");
+      }
+      console.error("Erro ao criar livro:", error);
+      throw new Error("Falha ao criar livro no banco de dados");
     }
-  }
+ }
 
   static async update(id, bookData) {
     const { titulo, autor, genero, ano_publicacao } = bookData;
