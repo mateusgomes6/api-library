@@ -139,3 +139,59 @@ describe('Book Model - special cases', () => {
     });
 });
 
+describe('Book Model - getAllPaginated', () => {
+    it('should call db.execute with correct LIMIT and OFFSET for the first page', async () => {
+        const mockBooks = [{ id: 1, title: 'Livro 1' }];
+        const mockCountResult = [{ total: 50 }];
+        db.execute
+            .mockResolvedValueOnce([mockBooks])
+            .mockResolvedValueOnce([mockCountResult]);
+
+        const result = await Book.getAllPaginated(1, 10);
+
+        expect(db.execute).toHaveBeenCalledWith('SELECT * FROM books LIMIT ? OFFSET ?', [10, 0]);
+        expect(db.execute).toHaveBeenCalledWith('SELECT COUNT(*) AS total FROM books');
+        expect(result.items).toEqual(mockBooks);
+        expect(result.totalItems).toBe(50);
+        expect(result.totalPages).toBe(5);
+        expect(result.currentPage).toBe(1);
+        expect(result.pageSize).toBe(10);
+    });
+
+    it('should call db.execute with correct LIMIT and OFFSET for a different page', async () => {
+        const mockBooks = [{ id: 11, title: 'Livro 11' }];
+        const mockCountResult = [{ total: 50 }];
+        db.execute
+            .mockResolvedValueOnce([mockBooks])
+            .mockResolvedValueOnce([mockCountResult]);
+
+        const result = await Book.getAllPaginated(2, 10);
+
+        expect(db.execute).toHaveBeenCalledWith('SELECT * FROM books LIMIT ? OFFSET ?', [10, 10]);
+        expect(db.execute).toHaveBeenCalledWith('SELECT COUNT(*) AS total FROM books');
+        expect(result.items).toEqual(mockBooks);
+        expect(result.currentPage).toBe(2);
+        expect(result.pageSize).toBe(10);
+    });
+
+    it('should handle cases with fewer items than the limit', async () => {
+        const mockBooks = [{ id: 1, title: 'Livro 1' }, { id: 2, title: 'Livro 2' }];
+        const mockCountResult = [{ total: 2 }];
+        db.execute
+            .mockResolvedValueOnce([mockBooks])
+            .mockResolvedValueOnce([mockCountResult]);
+
+        const result = await Book.getAllPaginated(1, 10);
+
+        expect(result.items).toEqual(mockBooks);
+        expect(result.totalItems).toBe(2);
+        expect(result.totalPages).toBe(1);
+    });
+
+    it('should handle errors during database query', async () => {
+        const mockError = new Error('Database error');
+        db.execute.mockRejectedValueOnce(mockError);
+
+        await expect(Book.getAllPaginated(1, 10)).rejects.toThrow('Database error');
+    });
+});

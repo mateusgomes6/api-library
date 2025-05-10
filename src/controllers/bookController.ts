@@ -1,5 +1,6 @@
 import Book from '../models/Book';
-import { Request, Response } from 'express';
+import { Request } from 'express';
+import { Response } from 'express-serve-static-core';
 
 export const getAllBooks = async (req, res) => {
     try {
