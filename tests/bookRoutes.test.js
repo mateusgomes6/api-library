@@ -25,7 +25,7 @@ describe('Book Routes - successfully', () => {
         const mockBook = { id: 1, titulo: 'Livro U', autor: 'Autor L', genero: 'Gênero C', ano_publicacao: 1988 };
         Book.getById.mockResolvedValue(mockBook);
 
-        const response = await request(app).get('/api/books/:id');
+        const response = await request(app).get('/api/books/1');
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ book: mockBook });
@@ -61,7 +61,7 @@ describe('Book Routes - successfully', () => {
         const mockUpdatedBook = { id: bookId, ...updatedBookData };
         Book.update.mockResolvedValue(mockUpdatedBook);
 
-        const response = await request(app).put('/api/books/:id').send(updatedBookData);
+        const response = await request(app).put(`/api/books/${bookId}`).send(updatedBookData);
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ book: mockUpdatedBook });
@@ -78,5 +78,28 @@ describe('Book Routes - failure', () => {
         expect(response.statusCode).toBe(400);
         expect(response.body).toHaveProperty('error');
         expect(Book.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 on PUT /api/books/:id if book is not found', async () => {
+        const nonExistentBookId = 99;
+        Book.update.mockResolvedValue(null);
+    
+        const response = await request(app).put(`/api/books/${nonExistentBookId}`).send({ title: 'Novo Título' });
+    
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: 'Livro não encontrado' });
+        expect(Book.update).toHaveBeenCalledWith(nonExistentBookId, { title: 'Novo Título' });
+    });
+    
+      it('should return 400 on PUT /api/books/:id if validation fails', async () => {
+        const bookId = 1;
+        const invalidBookData = { title: '' };
+        Book.update.mockRejectedValue(new Error('Erro de validação'));
+    
+        const response = await request(app).put(`/api/books/${bookId}`).send(invalidBookData);
+    
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ message: 'Erro de validação' });
+        expect(Book.update).toHaveBeenCalledWith(bookId, invalidBookData);
     });
 });
