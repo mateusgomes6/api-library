@@ -321,3 +321,68 @@ describe('Book Controller - failure', () => {
         expect(Book.destroy).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('Book Controller - getBooksPaginated', () => {
+    it('should call Book.getAllPaginated with default page and limit if not provided', async () => {
+        const mockResults = { items: [], totalItems: 0, totalPages: 1, currentPage: 1, pageSize: 10 };
+        Book.getAllPaginated.mockResolvedValue(mockResults);
+
+        const req = httpMocks.createRequest({ query: {} });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBooksPaginated(req, res);
+
+        expect(Book.getAllPaginated).toHaveBeenCalledWith(1, 10);
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual(mockResults);
+    });
+
+    it('should call Book.getAllPaginated with provided page and limit', async () => {
+        const mockResults = { items: [], totalItems: 50, totalPages: 5, currentPage: 2, pageSize: 20 };
+        Book.getAllPaginated.mockResolvedValue(mockResults);
+
+        const req = httpMocks.createRequest({ query: { page: '2', limit: '20' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBooksPaginated(req, res);
+
+        expect(Book.getAllPaginated).toHaveBeenCalledWith(2, 20);
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual(mockResults);
+    });
+
+    it('should return 400 if page parameter is invalid', async () => {
+        const req = httpMocks.createRequest({ query: { page: 'abc' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBooksPaginated(req, res);
+
+        expect(res.statusCode).toBe(400);
+        expect(res._getJSONData()).toEqual({ error: 'Parâmetros de página ou limite inválidos.' });
+        expect(Book.getAllPaginated).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 if limit parameter is invalid', async () => {
+        const req = httpMocks.createRequest({ query: { limit: 'xyz' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBooksPaginated(req, res);
+
+        expect(res.statusCode).toBe(400);
+        expect(res._getJSONData()).toEqual({ error: 'Parâmetros de página ou limite inválidos.' });
+        expect(Book.getAllPaginated).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors from Book.getAllPaginated', async () => {
+        const mockError = new Error('Model error');
+        Book.getAllPaginated.mockRejectedValue(mockError);
+
+        const req = httpMocks.createRequest({ query: { page: '1', limit: '10' } });
+        const res = httpMocks.createResponse();
+
+        await bookController.getBooksPaginated(req, res);
+
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({ error: 'Model error' });
+    });
+});
