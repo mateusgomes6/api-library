@@ -52,7 +52,8 @@ export const getBooksPaginated = async (req: Request, res: Response) => {
 
 export const addBook = async (req, res) => {
     const { titulo, autor, genero, ano_publicacao } = req.body;
-
+    
+    // Validação dos campos obrigatórios
     if (!titulo || !autor || !genero || !ano_publicacao) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
@@ -66,7 +67,23 @@ export const addBook = async (req, res) => {
 };
 
 export const updateBook = async (req, res) => {
+    const { titulo, autor, genero, ano_publicacao } = req.body;
     const { id } = req.params;
+     
+    // Validação dos campos
+    if (titulo !== undefined && titulo.trim() === '') {
+      throw new Error("Título do livro é obrigatório");
+    }
+    if (autor !== undefined && autor.trim() === '') {
+      throw new Error("Autor do livro é obrigatório");
+    }
+    if (genero !== undefined && genero.trim() === '') {
+      throw new Error("Gênero do livro é obrigatório");
+    }
+    if (ano_publicacao !== undefined && (typeof ano_publicacao !== "number" || isNaN(ano_publicacao))) {
+      throw new Error("Ano de publicação deve ser um número válido");
+    }
+
     try {
         const affectedRows = await Book.update(id, req.body);
         if (affectedRows === 0) {
