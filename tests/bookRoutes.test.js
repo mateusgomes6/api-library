@@ -101,6 +101,17 @@ describe('Book Routes - failure', () => {
         expect(Book.getById).toHaveBeenCalledWith(99);
     });
 
+    it('should return an empty list on GET /api/books/genre/:genre if no books are found', async () => {
+        const mockGenre = 'Ficção Científica';
+        Book.getByGenre.mockResolvedValue([]);
+      
+        const response = await request(app).get(`/api/books/genre/${mockGenre}`);
+      
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ books: [] });
+        expect(Book.getByGenre).toHaveBeenCalledWith(mockGenre);
+      });
+
     it('should return an error if required fields are missing on POST /api/books', async () => {
         const invalidBook = { titulo: 'Livro I', autor: 'Autor Z', genero: 'Gênero Q', ano_publicacao: 2005 };
 
@@ -122,7 +133,7 @@ describe('Book Routes - failure', () => {
         expect(Book.update).toHaveBeenCalledWith(nonExistentBookId, { title: 'Novo Título' });
     });
     
-      it('should return 400 on PUT /api/books/:id if validation fails', async () => {
+    it('should return 400 on PUT /api/books/:id if validation fails', async () => {
         const bookId = 1;
         const invalidBookData = { title: '' };
         Book.update.mockRejectedValue(new Error('Erro de validação'));
