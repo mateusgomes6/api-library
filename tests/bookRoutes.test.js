@@ -32,7 +32,7 @@ describe('Book Routes - successfully', () => {
         expect(Book.getById).toHaveBeenCalledWith(1);
     });
 
-    it('should return a book on GET /api/books/genre/:genero if found', async () => {
+    it('should create a book on GET /api/books/genre/:genero if found', async () => {
         const mockBook = { id: 1, titulo: 'Hackeando Tudo', autor: 'Raiam Santos', genero: 'Desenvolvimento pessoal', ano_publicacao: 1988 };
         Book.getByGenre.mockResolvedValue(mockBook);
 
@@ -66,6 +66,17 @@ describe('Book Routes - successfully', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ book: mockUpdatedBook });
         expect(Book.update).toHaveBeenCalledWith(bookId, updatedBookData);
+    });
+
+    it('should return a 204 No Content on DELETE /api/books/:id if the book exists', async () => {
+        Book.deleteById.mockResolvedValue(true);
+    
+        const bookIdToDelete = 1;
+        const response = await request(app).delete(`/api/books/${bookIdToDelete}`);
+    
+        expect(response.statusCode).toBe(204);
+        expect(response.body).toEqual({});
+        expect(Book.deleteById).toHaveBeenCalledWith(bookIdToDelete)
     });
 });
 
