@@ -51,6 +51,12 @@ export const getBooksPaginated = async (req: Request, res: Response) => {
 };
 
 export const addBook = async (req, res) => {
+    const { titulo, autor, genero, ano_publicacao } = req.body;
+
+    if (!titulo || !autor || !genero || !ano_publicacao) {
+        return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+    }
+
     try {
         const bookId = await Book.create(req.body);
         res.status(201).json({ id: bookId, message: 'Livro adicionado com sucesso.' });
