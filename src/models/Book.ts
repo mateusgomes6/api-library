@@ -97,11 +97,30 @@ class Book {
     }
  }
 
-  static async update(id, bookData) {
+  static async update(id: number, bookData: {titulo?: string; autor?: string; genero?: string; ano_publicacao?: number}) {
+    // Validação do bookData
+    if (!bookData) {
+      throw new Error("Dados do livro não fornecidos"); 
+    }
     const { titulo, autor, genero, ano_publicacao } = bookData;
+
+    // Validações dos campos
+    if (titulo !== undefined && titulo.trim() === '') {
+      throw new Error("Título do livro é obrigatório");
+    }
+    if (autor !== undefined && autor.trim() === '') {
+      throw new Error("Autor do livro é obrigatório");
+    }
+    if (genero !== undefined && genero.trim() === '') {
+      throw new Error("Gênero do livro é obrigatório");
+    }
+    if (ano_publicacao !== undefined && (typeof ano_publicacao !== "number" || isNaN(ano_publicacao))) {
+      throw new Error("Ano de publicação deve ser um número válido");
+    }
+
     try {
       const [result] = await db.execute(
-        "UPDATE books SET titulo = ?, autor = ?, genero = ?, ano_publicacao = ?, WHERE ID = ?",
+        "UPDATE books SET titulo = ?, autor = ?, genero = ?, ano_publicacao = ? WHERE ID = ?",
         [titulo, autor, genero, ano_publicacao, id]
       );
       return result.affectedRows;
