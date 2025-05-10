@@ -11,6 +11,9 @@ router.get('books/:id', bookController.getBookById);
 //Buscar livros de um gênero específico
 router.get('books/genre/:genero', bookController.getBookByGenre);
 
+//Buscar listagem paginada
+router.get('books/paginated', bookController.getBooksPaginated);
+
 //Adicionar livro
 router.post('/books', bookController.addBook);
 
