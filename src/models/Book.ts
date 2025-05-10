@@ -35,7 +35,7 @@ class Book {
   }
 
   static async getAllPaginated(page: number, limit: number) {
-    const offset = (page - 1) * limit; // Calcula o ponto de início dos resultados
+    const offset = (page - 1) * limit;
     try {
       const [rows] = await db.execute("SELECT * FROM books LIMIT ? OFFSET ?", [
         limit,
