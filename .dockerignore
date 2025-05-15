@@ -1,0 +1,26 @@
+**/*
+
+# Permissão do necessário
+!package.json
+!package-lock.json
+!yarn.lock
+!src/
+!Dockerfile
+!.dockerignore
+!docker-compose.yml
+!docker-compose*.yml
+!.env
+
+# Ignorar arquivos e pastas desnecessários
+.README.md
+node_modules/
+.git/
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+__tests__/
+test/
+coverage/
+build/
+dist/
+.cache/
