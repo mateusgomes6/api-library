@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports: 
+      - "8000:8000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - node_modules:/app
+    networks:
+      - app-network
+  db:
+    image: mysql:8.0
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Mateus12feijoada
+      MYSQL_DATABASE: library_app
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - db-network
+
+networks:
+  app-network:
+    driver: bridge
+  db-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+    driver: local
+  db_data:
+    driver: local
