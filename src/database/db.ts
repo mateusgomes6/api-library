@@ -12,6 +12,15 @@ const banco = mysql.createPool({
   queueLimit: 0
 });
 
+banco.getConnection((err, connection) => {
+  if (err) {
+    console.error('Erro ao conectar ao MySQL:', err.message);
+  } else {
+    console.log('Conectado ao MySQL!');
+    connection.release();
+  }
+});
+
 module.exports = banco.promise();
 
 
