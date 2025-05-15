@@ -3,7 +3,7 @@ services:
   app:
     build: .
     ports: 
-      - "8000:8000"
+      - "3000:3000"
     environment:
       NODE_ENV: development
       DB_HOST: db
@@ -11,9 +11,10 @@ services:
       - db
     volumes:
       - .:/app
-      - node_modules:/app
+      - /app/node_modules
     networks:
       - app-network
+
   db:
     image: mysql:8.0
     ports: 
@@ -24,16 +25,12 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - db-network
+      - app-network
 
 networks:
   app-network:
     driver: bridge
-  db-network:
-    driver: bridge
 
 volumes:
-  node_modules:
-    driver: local
   db_data:
     driver: local
