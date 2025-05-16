@@ -14,4 +14,16 @@ class User {
         throw error;
        }
     }
+
+    static async findByUsername (username: string): Promise<any> {
+        try {
+            const [rows] = await db.execute(
+                'SELECT * FROM user WHERE username = ?', [username]
+            );
+            return rows[0];
+        } catch (error: any) {
+            console.error('Erro ao buscar o usuário por username', error);
+            throw error;
+        }
+    }
 }
