@@ -26,4 +26,10 @@ class User {
             throw error;
         }
     }
+
+    static async comparePassword (password: string, password_hash: string): Promise<boolean> {
+        return await bcrypt.compare(password, password_hash);
+    }
 }
+
+export default User;
