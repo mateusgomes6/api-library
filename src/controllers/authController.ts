@@ -12,17 +12,17 @@ export const register = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      throw new Error('Username, email e password são obrigatórios.');
+      return res.status(400).json({ error: 'Username, email e password são obrigatórios.' });
     }
 
     try {
         const existingUser = await User.findByUsername(username);
         if (existingUser) {
-            throw new Error('Username já existe.');
+            return res.status(409).json({ error: 'Username já existe.' });
         }
 
         const userId = await User.create(username, email, password);
-        res.status(201).json({ message: 'Usuário registrado com sucesso.', userId});
+        res.status(201).json({ message: 'Usuário registrado com sucesso.', userId });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
@@ -32,23 +32,23 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        throw new Error('Username e password são obrigatórios');
+        return res.status(400).json({ error: 'Username e password são obrigatórios' });
     }
 
     try {
         const user = await User.findByUsername(username);
         if (!user) {
-            throw new Error('Username inválido');
+            return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
         const passwordValid = await User.comparePassword(password, user.password_hash);
         if (!passwordValid) {
-            throw new Error('Senha inválida');
+            return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h'});
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } catch (error: any) {
-        res.status(401).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 };

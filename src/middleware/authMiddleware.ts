@@ -16,7 +16,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new Error('Token de autenticação não fornecido.')
+        return res.status(401).json({ error: 'Token não fornecido.' });
     }
 
     const token = authHeader.split(' ')[1];
@@ -26,6 +26,6 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         req.userId = decoded.userId;
         next();
     } catch (error: any) {
-        throw new Error('Token inválido.')
+        return res.status(401).json({ error: 'Token inválido ou expirado.' });
     }
 };
