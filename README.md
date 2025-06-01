@@ -1,12 +1,12 @@
 # 📚 Book Management System
-This is a RESTful API built with Node.js and Express.js for managing a collection of books. It includes features for efficient listing of large datasets using pagination, user authentication with JWT, and data validation, all orchestrated with Docker Compose for easy setup.
+This is a RESTful API built with Node.js and Express.js for managing a collection of books. It includes features for efficient listing of large datasets using pagination, automated and unit tests, user authentication with JWT, and data validation, all orchestrated with Docker Compose for easy setup.
 
 ## 🚀 Technologies Used
 - Node.js: JavaScript runtime environment.
 - Express.js: Web framework for Node.js, used to build the API.
 - MySQL: Relational database for storing book and user data.
 - Docker & Docker Compose: For containerization and orchestration of the development and production environment.
-T- ypeScript: Superset of JavaScript that adds static typing.
+- Jest: Automated and unit tests
 - Bcrypt: For secure password hashing.
 - JSON Web Tokens (JWT): For token-based authentication.
 - Express-validator / Joi (optional): For input data validation.
